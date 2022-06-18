@@ -23,6 +23,7 @@ export default class TictactoeComponent extends BaseGameComponent {
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.statusMessage = '';
   }
 
   ngAfterViewInit(): void {

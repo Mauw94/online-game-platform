@@ -1,10 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
-
 code {
   color: #e01a76;
 }
@@ -26,7 +22,33 @@ button {
     border: 2px solid #8e44ad;
     color: #8e44ad;
   }
+
+  &:disabled {
+    background-color: #b7a3c0;
+    cursor: default;
+  }
 }
+
+.purple {
+  color: #8e44ad;
+}
+
+.status {
+  color: black;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.input {
+  height: 30px;
+  width: 20em;
+  font-size: 17px;
+  outline: none;
+  border: 1px solid #8e44ad;
+  border-radius: 3px;
+  padding: 0 10px;
+}
+
 
 p,
 h1,
@@ -34,6 +56,17 @@ h2,
 h3,
 h4,
 html,
+span,
 a {
   font-family: "Zen Tokyo Zoo", cursive;
+}
+
+.game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
 }

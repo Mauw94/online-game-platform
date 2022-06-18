@@ -10,7 +10,6 @@ class SocketService {
      */
     public connect(url: string): Socket {
         this.socket = io(url);
-        console.log(this.socket);
         return this.socket;
     }
 

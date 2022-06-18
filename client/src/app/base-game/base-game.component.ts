@@ -37,6 +37,7 @@ export class BaseGameComponent implements OnInit {
 
     gameService.roomFull.subscribe(roomFull => {
       this.isRoomFull = roomFull;
+      this.statusMessage = 'Waiting for host to start the game..'
     });
   }
 
