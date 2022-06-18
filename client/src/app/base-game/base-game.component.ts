@@ -50,8 +50,9 @@ export class BaseGameComponent implements OnInit {
     });
 
     await gameService.checkGameProgress(socketService.socket!, (gameStarted) => {
-      console.log('anything.');
       console.log(gameStarted);
+      if (gameStarted)
+        this.isGameStarted = true;
     });
   }
 

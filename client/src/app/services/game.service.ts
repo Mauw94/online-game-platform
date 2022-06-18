@@ -117,12 +117,9 @@ class GameService {
      * @param socket 
      */
     public async checkGameProgress(socket: Socket, listener: (gameStarted: boolean) => void): Promise<any> {
-        console.log('calling?');
         return new Promise((rs, rj) => {
-            console.log('going to call this?????');
-            
             socket.emit('game_progress');
-            socket.on('found_gamestate', (message) => rs(message));
+            rs(socket.on('found_gamestate', ({ gameStarted }) => listener(gameStarted)));
         });
     }
 

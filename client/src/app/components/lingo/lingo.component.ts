@@ -38,6 +38,9 @@ export class LingoComponent extends BaseGameComponent {
   async ngOnInit() {
     super.ngOnInit();
     this.statusMessage = '';
+
+    console.log(this.isGameStarted);
+    console.log(this.isRoomFull);
   }
 
   async ngAfterViewInit() {
@@ -50,13 +53,13 @@ export class LingoComponent extends BaseGameComponent {
         this.playerTurn = options.start;
         this.inputTextLength = this.wordToGuess?.length;
         this.statusMessage = 'Have fun';
+      });
 
-        this.gameForm = new FormGroup({
-          word: new FormControl('', [
-            Validators.required,
-            Validators.minLength(this.inputTextLength),
-            Validators.maxLength(this.inputTextLength)])
-        });
+      this.gameForm = new FormGroup({
+        word: new FormControl('', [
+          Validators.required,
+          Validators.minLength(this.inputTextLength),
+          Validators.maxLength(this.inputTextLength)])
       });
     }
   }
@@ -72,7 +75,7 @@ export class LingoComponent extends BaseGameComponent {
    * Go for a new word guess.
    */
   guess(): void {
-    console.log('guessing');
+    console.log(this.playerTurn);
     if (!this.playerTurn) return;
 
     var word = this.gameForm!.controls.word.value;
