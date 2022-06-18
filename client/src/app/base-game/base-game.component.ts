@@ -42,6 +42,8 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
+    if (gameService.gameType.getValue() !== this.gameType) return;
+
     await gameService.onGameWin(socketService.socket!, (message: string) => {
       this.isGameOver = true;
       this.statusMessage = message;
@@ -54,10 +56,12 @@ export class BaseGameComponent implements OnInit {
   public startGame(): void {
     switch (this.gameType) {
       case GameType.TICTACTOE:
+        gameService.gameType.next(GameType.TICTACTOE);
         gameService.startGame(socketService.socket!,
           { roomId: gameService.roomId.getValue(), gameType: this.gameType });
         break;
       case GameType.WORDGUESSER:
+        gameService.gameType.next(GameType.WORDGUESSER);
         gameService.startGame(socketService.socket!,
           { roomId: gameService.roomId.getValue(), gameType: this.gameType, letterCount: lingoService.letterCount.getValue() });;
         break;

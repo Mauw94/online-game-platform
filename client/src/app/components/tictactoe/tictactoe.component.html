@@ -6,7 +6,7 @@
     <app-join-room [gameType]="gameType" *ngIf="!isInRoom"></app-join-room>
 </div>
 
-<div *ngIf="isInRoom && !isGameStarted">
+<div *ngIf="isRoomFull && !isGameStarted" class="game">
     <button (click)="startGame()">Start the game</button>
 </div>
 

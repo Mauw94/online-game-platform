@@ -29,7 +29,7 @@ export default class TictactoeComponent extends BaseGameComponent {
   async ngAfterViewInit() {
     if (socketService.socket) {
       super.ngAfterViewInit();
-
+      
       await gameService.onStartGame(socketService.socket, (options) => {
         //super.startGame();
 

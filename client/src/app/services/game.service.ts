@@ -11,6 +11,7 @@ class GameService {
     public roomId: BehaviorSubject<string> = new BehaviorSubject<string>('');
     public playerToPlay: BehaviorSubject<CellEnum> = new BehaviorSubject<CellEnum>(CellEnum.EMPTY);
     public roomFull: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public gameType: BehaviorSubject<GameType> = new BehaviorSubject<GameType>(GameType.TICTACTOE);
 
     /**
      * Join a game room.

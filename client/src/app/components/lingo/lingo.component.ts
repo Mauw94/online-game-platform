@@ -42,12 +42,13 @@ export class LingoComponent extends BaseGameComponent {
 
   async ngAfterViewInit() {
     if (socketService.socket) {
+      super.ngAfterViewInit();
+
       await gameService.onStartGame(socketService.socket, (options) => {
-        console.log(options);
         super.isGameStarted = true;
         this.wordToGuess = options.wordToGuess;
-        this.inputTextLength = this.wordToGuess.length;
         this.playerTurn = options.start;
+        this.inputTextLength = this.wordToGuess?.length;
         this.statusMessage = 'Have fun';
 
         this.gameForm = new FormGroup({
