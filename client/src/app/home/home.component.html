@@ -1,0 +1,21 @@
+<div *ngIf="authenticated">
+    <div class="mainContainer">
+        <div class="card cardBoxes">
+            <div class="card-body">
+                <h4 class="card-title">Word guesser</h4>
+                <p class="card-text">Guess the correct word before your opponent does.</p>
+                <button (click)="playWordGuesser()">Let's play!</button>
+            </div>
+        </div>
+        <div class="card cardBoxes">
+            <div class="card-body">
+                <h4 class="card-title">Tic Tac Toe</h4>
+                <p class="card-text">TextTextText</p>
+                <button (click)="playTicTacToe()">Tic Tac Toe!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!authenticated" class="mainContainer">
+    <h4>Please login to play games.</h4>
+</div>

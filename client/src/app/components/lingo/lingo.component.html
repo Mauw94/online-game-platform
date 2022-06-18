@@ -1,0 +1,16 @@
+<div class="status text-center p-4">
+    <p>{{statusMessage}}</p>
+</div>
+
+<div>
+    <app-join-room [gameType]="gameType" *ngIf="!isInRoom"></app-join-room>
+</div>
+
+<div *ngIf="isRoomFull && !isGameStarted">
+    <input (change)="updateLetterCount()" type="number" min="4" max="10" [(ngModel)]="letterCount" placeholder="Word letter count">
+    <button (click)="startGame()">Start the game</button>
+</div>
+
+<div *ngIf="isGameStarted">
+    <p>We're playing!</p>
+</div>

@@ -1,0 +1,23 @@
+<div class="status text-center p-4">
+    <p>{{statusMessage}}</p>
+</div>
+
+<div>
+    <app-join-room [gameType]="gameType" *ngIf="!isInRoom"></app-join-room>
+</div>
+
+<div *ngIf="isInRoom && !isGameStarted">
+    <button (click)="startGame()">Start the game</button>
+</div>
+
+<div *ngIf="isGameStarted">
+    <div class="game-board">
+        <div class="board" *ngFor="let row of [0,1,2]">
+            <tictactoe-cell *ngFor="let col of [0,1,2]" [row]="row" [col]="col" [piece]="board[row][col]"
+                (click)="move(row, col)">
+            </tictactoe-cell>
+        </div>
+    </div>
+    <div class="pt2"></div>
+    <div *ngIf="isGameOver" class="btn btn-primary new-game" (click)="restart()">New game</div>
+</div>

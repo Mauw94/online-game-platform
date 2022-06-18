@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #e01a76;
+}
+
+button {
+  outline: none;
+  background-color: #8e44ad;
+  color: #fff;
+  font-size: 17px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  padding: 4px 18px;
+  transition: all 230ms eas-in-out;
+  margin-top: 1em;
+  cursor: pointer;
+
+  &:hover {
+    background-color: transparent;
+    border: 2px solid #8e44ad;
+    color: #8e44ad;
+  }
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+html,
+a {
+  font-family: "Zen Tokyo Zoo", cursive;
+}

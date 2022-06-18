@@ -1,0 +1,33 @@
+.game-board {
+    align-items: center;
+    justify-content: center;
+    display: grid;
+}
+
+.board {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    color: #fff;
+}
+
+.status {
+    color: black;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.roomJoin {
+    margin-top: 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.roomIdCode {
+    color: #8e44ad;
+}
+
+.new-game {
+    width: 100%;
+}
