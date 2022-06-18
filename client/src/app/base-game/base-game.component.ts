@@ -48,6 +48,11 @@ export class BaseGameComponent implements OnInit {
       this.isGameOver = true;
       this.statusMessage = message;
     });
+
+    await gameService.checkGameProgress(socketService.socket!, (gameStarted) => {
+      console.log('anything.');
+      console.log(gameStarted);
+    });
   }
 
   /**

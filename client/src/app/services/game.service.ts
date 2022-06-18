@@ -29,9 +29,6 @@ class GameService {
         });
     }
 
-    // TODO: check for some rewrite in .emit and .on 
-    // TODO: make all the methods return resolve promises.
-
     /**
      * Have connected sockets listen to room full event.
      * @param socket 
@@ -119,8 +116,14 @@ class GameService {
      * Check if there's a game in progress.
      * @param socket 
      */
-    public async checkGameInProgress(socket: Socket) {
-        socket.emit('check_game_inprogress');
+    public async checkGameProgress(socket: Socket, listener: (gameStarted: boolean) => void): Promise<any> {
+        console.log('calling?');
+        return new Promise((rs, rj) => {
+            console.log('going to call this?????');
+            
+            socket.emit('game_progress');
+            socket.on('found_gamestate', (message) => rs(message));
+        });
     }
 
     /**

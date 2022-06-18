@@ -6,7 +6,7 @@ import wordDictionaryReader from "../utils/wordDictionaryReader";
 @SocketController()
 export class TicTacToeGameController {
 
-    private gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = boardstate
+    private gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestate
 
     /**
      * Listens for join_game event for a user to join a game room.
@@ -16,6 +16,7 @@ export class TicTacToeGameController {
      */
     @OnMessage('join_game')
     public async joinGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
+        console.log('joining room..');
         const connectedSockets = io.sockets.adapter.rooms.get(message.roomId); // Get all the connected sockets to this room
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id); // The rooms the socket is connected to.
 
@@ -88,12 +89,15 @@ export class TicTacToeGameController {
      * @param io 
      * @param socket 
      */
-    @OnMessage('check_game_inprogress')
-    public async checkGameInProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket) {
+    @OnMessage('game_progress')
+    public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
+        console.log('getting here?');
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = this.gameStates.get(gameRoom);
+        console.log(gameRoom);
+        console.log(gameState);
         if (gameState) {
-            socket.emit('found_gamestate', gameState);
+            socket.emit('found_gamestate', { gameStarted: gameState.started });
         }
     }
 
@@ -120,9 +124,11 @@ export class TicTacToeGameController {
             switch (message.gameType) {
                 case GameType.TICTACTOE:
                     this.startTicTacToe(socket, message)
+                    this.gameStates.set(message.roomId, { game: 'tictactoe', started: true });
                     break;
                 case GameType.WORDGUESSER:
                     this.startWordGuesser(socket, message);
+                    this.gameStates.set(message.roomId, { game: 'lingo', started: true });
                     break;
             }
         }
