@@ -21,16 +21,16 @@ export default class TictactoeComponent extends BaseGameComponent {
     super(apiService, GameType.TICTACTOE);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     super.ngOnInit();
     this.statusMessage = '';
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     if (socketService.socket) {
       super.ngAfterViewInit();
 
-      gameService.onStartGame(socketService.socket, (options) => {
+      await gameService.onStartGame(socketService.socket, (options) => {
         //super.startGame();
 
         this.isGameStarted = true;
@@ -43,7 +43,7 @@ export default class TictactoeComponent extends BaseGameComponent {
         this.newGame();
       });
 
-      gameService.onGameUpdate(socketService.socket, (newBoard, playerToPlay) => {
+      await gameService.onGameUpdate(socketService.socket, (newBoard, playerToPlay) => {
         this.board = newBoard;
         if (!this.isGameOver) {
           if (this.currentPlayer === playerToPlay) {
@@ -159,8 +159,8 @@ export default class TictactoeComponent extends BaseGameComponent {
   /**
    * Restart the game.
    */
-  restart(): void {
-    gameService.restartGame(socketService.socket!, gameService.roomId.getValue(), GameType.TICTACTOE);
+  async restart(): Promise<void> {
+    await gameService.restartGame(socketService.socket!, gameService.roomId.getValue(), GameType.TICTACTOE);
   }
 
   /**

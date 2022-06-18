@@ -36,8 +36,10 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async listenToRoomFull(socket: Socket, listener: (options: any) => void) {
-        socket.on('room_full', listener);
+    public async listenToRoomFull(socket: Socket, listener: (options: any) => void): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.on('room_full', listener));;
+        });
     }
 
     /**
@@ -45,8 +47,10 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onStartGame(socket: Socket, listener: (options: any) => void) {
-        socket.on('start_game', listener);
+    public async onStartGame(socket: Socket, listener: (options: any) => void): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.on('start_game', listener));
+        });
     }
 
     /**
@@ -54,8 +58,10 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onGameUpdate(socket: Socket, listener: (boardState: IBoard, playerToPlay: CellEnum) => void) {
-        socket.on('on_game_update', ({ boardState, playerToPlay }) => listener(boardState, playerToPlay));
+    public async onGameUpdate(socket: Socket, listener: (boardState: IBoard, playerToPlay: CellEnum) => void): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.on('on_game_update', ({ boardState, playerToPlay }) => listener(boardState, playerToPlay)));
+        });
     }
 
     /**
@@ -90,8 +96,10 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onGameWin(socket: Socket, listener: (message: string) => void) {
-        socket.on('on_game_win', ({ message }) => listener(message));
+    public async onGameWin(socket: Socket, listener: (message: string) => void): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.on('on_game_win', ({ message }) => listener(message)));
+        });
     }
 
     /**
@@ -100,8 +108,10 @@ class GameService {
      * @param roomid 
      * @param gameType
      */
-    public async restartGame(socket: Socket, roomId: string, gameType: GameType) {
-        socket.emit('restart_game', { roomId: roomId, gameType: gameType });
+    public async restartGame(socket: Socket, roomId: string, gameType: GameType): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.emit('restart_game', { roomId: roomId, gameType: gameType }));
+        });
     }
 
     /**

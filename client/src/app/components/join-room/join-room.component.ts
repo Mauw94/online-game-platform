@@ -17,8 +17,8 @@ export class JoinRoomComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-    gameService.listenToRoomFull(socketService.socket!, (options: any) => {
+  async ngOnInit() {
+    await gameService.listenToRoomFull(socketService.socket!, (options: any) => {
       gameService.roomFull.next(true);
     });
   }

@@ -35,14 +35,14 @@ export class LingoComponent extends BaseGameComponent {
     super(apiService, GameType.WORDGUESSER);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     super.ngOnInit();
     this.statusMessage = '';
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     if (socketService.socket) {
-      gameService.onStartGame(socketService.socket, (options) => {
+      await gameService.onStartGame(socketService.socket, (options) => {
         console.log(options);
         super.isGameStarted = true;
         this.wordToGuess = options.wordToGuess;

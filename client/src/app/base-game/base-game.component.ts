@@ -27,7 +27,7 @@ export class BaseGameComponent implements OnInit {
     this._apiService = apiService;
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
       if (!this.isGameStarted && this.isInRoom) {
@@ -41,8 +41,8 @@ export class BaseGameComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    gameService.onGameWin(socketService.socket!, (message: string) => {
+  async ngAfterViewInit() {
+    await gameService.onGameWin(socketService.socket!, (message: string) => {
       this.isGameOver = true;
       this.statusMessage = message;
     });
