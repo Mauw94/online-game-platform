@@ -56,7 +56,7 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onGameUpdate(socket: Socket, listener: (gameState: IBoard, playerToPlay: CellEnum) => void): Promise<any> {
+    public async onGameUpdate(socket: Socket, listener: (gameState: any, playerToPlay: CellEnum) => void): Promise<any> {
         return new Promise((rs, rj) => {
             rs(socket.on('on_game_update', ({ gameState, playerToPlay }) => listener(gameState, playerToPlay)));
         });
