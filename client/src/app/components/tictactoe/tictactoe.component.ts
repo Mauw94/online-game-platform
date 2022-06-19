@@ -29,10 +29,9 @@ export default class TictactoeComponent extends BaseGameComponent {
   async ngAfterViewInit() {
     if (socketService.socket) {
       super.ngAfterViewInit();
-      
-      await gameService.onStartGame(socketService.socket, (options) => {
-        //super.startGame();
 
+      // game starts, set initial values
+      await gameService.onStartGame(socketService.socket, (options) => {
         this.isGameStarted = true;
         if (options.symbol === 'x') this.currentPlayer = CellEnum.X;
         if (options.symbol === 'o') this.currentPlayer = CellEnum.O;
@@ -43,8 +42,9 @@ export default class TictactoeComponent extends BaseGameComponent {
         this.newGame();
       });
 
-      await gameService.onGameUpdate(socketService.socket, (newBoard, playerToPlay) => {
-        this.board = newBoard;
+      // game updates, set the gamestate and player to play
+      await gameService.onGameUpdate(socketService.socket, (gameState, playerToPlay) => {
+        this.board = gameState;
         if (!this.isGameOver) {
           if (this.currentPlayer === playerToPlay) {
             this.playerTurn = true;
@@ -53,6 +53,20 @@ export default class TictactoeComponent extends BaseGameComponent {
           }
           this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
         }
+      });
+
+      // TODO: make gamestate and playerturn generic -> move to basecomponent
+      // when player left the game screen and comes back to a game in progress, get the gamestate, playertoplay states from the server.
+      await gameService.checkGameProgress(socketService.socket!, (gameStarted, playerToPlay, gameState) => {
+        this.isGameStarted = gameStarted;
+        this.currentPlayer = gameService.playerToPlay.getValue();
+        if (gameService.playerToPlay.getValue() === playerToPlay) {
+          this.playerTurn = true;
+        } else {
+          this.playerTurn = false;
+        }
+
+        this.board = gameState;
       });
     }
   }
@@ -64,6 +78,7 @@ export default class TictactoeComponent extends BaseGameComponent {
    */
   move(row: number, col: number): void {
     if (!this.playerTurn) return;
+    if (this.board[row][col] !== CellEnum.EMPTY) return;
 
     if (!this.isGameOver && this.board[row][col] === CellEnum.EMPTY) {
       this.board[row][col] = this.currentPlayer;

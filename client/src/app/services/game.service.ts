@@ -56,9 +56,9 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onGameUpdate(socket: Socket, listener: (boardState: IBoard, playerToPlay: CellEnum) => void): Promise<any> {
+    public async onGameUpdate(socket: Socket, listener: (gameState: IBoard, playerToPlay: CellEnum) => void): Promise<any> {
         return new Promise((rs, rj) => {
-            rs(socket.on('on_game_update', ({ boardState, playerToPlay }) => listener(boardState, playerToPlay)));
+            rs(socket.on('on_game_update', ({ gameState, playerToPlay }) => listener(gameState, playerToPlay)));
         });
     }
 
@@ -67,8 +67,8 @@ class GameService {
      * @param socket 
      * @param board 
      */
-    public async updateGame(socket: Socket, board: IBoard, playerToPlay: CellEnum) {
-        socket.emit('update_game', { boardState: board, playerToPlay: playerToPlay });
+    public async updateGame(socket: Socket, board: any, playerToPlay: CellEnum) {
+        socket.emit('update_game', { gameState: board, playerToPlay: playerToPlay });
     }
 
     /**
@@ -116,10 +116,10 @@ class GameService {
      * Check if there's a game in progress.
      * @param socket 
      */
-    public async checkGameProgress(socket: Socket, listener: (gameStarted: boolean) => void): Promise<any> {
+    public async checkGameProgress(socket: Socket, listener: (gameStarted: boolean, playerToPlay: any, gameState: any) => void): Promise<any> {
         return new Promise((rs, rj) => {
             socket.emit('game_progress');
-            rs(socket.on('found_gamestate', ({ gameStarted }) => listener(gameStarted)));
+            rs(socket.on('found_gamestate', ({ gameStarted, playerToPlay, gameState }) => listener(gameStarted, playerToPlay, gameState)));
         });
     }
 

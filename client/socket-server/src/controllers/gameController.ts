@@ -67,6 +67,13 @@ export class TicTacToeGameController {
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
+        const gameState = this.gameStates.get(gameRoom);
+
+        // update gamestate
+        gameState.gameState = message.gameState;
+        gameState.playerToPlay = message.playerToPlay;
+        this.gameStates.set(gameRoom, gameState);
+
         socket.emit('on_game_update', message);
         socket.to(gameRoom).emit('on_game_update', message);
     }
@@ -90,13 +97,12 @@ export class TicTacToeGameController {
      */
     @OnMessage('game_progress')
     public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
-        console.log('getting here?');
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = this.gameStates.get(gameRoom);
         console.log(gameRoom);
         console.log(gameState);
         if (gameState) {
-            socket.emit('found_gamestate', { gameStarted: gameState.started });
+            socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
         }
     }
 
@@ -123,11 +129,11 @@ export class TicTacToeGameController {
             switch (message.gameType) {
                 case GameType.TICTACTOE:
                     this.startTicTacToe(socket, message)
-                    this.gameStates.set(message.roomId, { game: 'tictactoe', started: true });
+                    this.gameStates.set(message.roomId, { game: 'tictactoe', started: true, playerToPlay: {}, gameState: {} });
                     break;
                 case GameType.WORDGUESSER:
                     this.startWordGuesser(socket, message);
-                    this.gameStates.set(message.roomId, { game: 'lingo', started: true });
+                    this.gameStates.set(message.roomId, { game: 'lingo', started: true, playerToPlay: {}, gameState: {} });
                     break;
             }
         }
