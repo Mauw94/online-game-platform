@@ -38,6 +38,7 @@ export class TicTacToeGameController {
      */
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
+        console.log(message);
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = this.gameStates.get(gameRoom);
 
@@ -45,6 +46,8 @@ export class TicTacToeGameController {
         gameState.gameState = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
         this.gameStates.set(gameRoom, gameState);
+
+        console.log('updated gamestate: ', this.gameStates.get(gameRoom));
 
         socket.emit('on_game_update', message);
         socket.to(gameRoom).emit('on_game_update', message);
@@ -129,8 +132,8 @@ export class TicTacToeGameController {
     private async startWordGuesser(socket: Socket, message: any): Promise<void> {
         var wordToGuess = await wordDictionaryReader.getRandomWordAsync(message.letterCount);
 
-        socket.emit('start_game', { start: true, wordToGuess: wordToGuess });
-        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess });
+        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x' });
+        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o' });
     }
 
 }

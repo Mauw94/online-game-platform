@@ -14,6 +14,7 @@ export interface MatchingLetters {
 
 export interface Letter {
   match: boolean;
+  contains: boolean;
   character: string;
 }
 
@@ -39,9 +40,6 @@ export class LingoComponent extends BaseGameComponent {
   async ngOnInit() {
     super.ngOnInit();
     this.statusMessage = '';
-
-    console.log(this.isGameStarted);
-    console.log(this.isRoomFull);
   }
 
   async ngAfterViewInit() {
@@ -49,11 +47,16 @@ export class LingoComponent extends BaseGameComponent {
       super.ngAfterViewInit();
 
       await gameService.onStartGame(socketService.socket, (options) => {
+        console.log(options.wordToGuess);
         super.isGameStarted = true;
         this.wordToGuess = options.wordToGuess;
-        this.playerTurn = options.start;
         this.inputTextLength = this.wordToGuess?.length;
         this.statusMessage = 'Have fun';
+
+        this.setCurrentPlayer(options.symbol);
+        if (options.start) { this.playerTurn = true; } else { this.playerTurn = false; }
+
+        this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
       });
 
       this.gameForm = new FormGroup({
@@ -61,6 +64,17 @@ export class LingoComponent extends BaseGameComponent {
           Validators.required,
           Validators.minLength(this.inputTextLength),
           Validators.maxLength(this.inputTextLength)])
+      });
+
+      await gameService.onGameUpdate(socketService.socket, (gameState, playerToPlay) => {
+        if (this.currentPlayer === playerToPlay) {
+          this.playerTurn = true;
+        } else {
+          this.playerTurn = false;
+        }
+
+        this.matchingLetters = gameState;
+        this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
       });
     }
   }
@@ -76,7 +90,6 @@ export class LingoComponent extends BaseGameComponent {
    * Go for a new word guess.
    */
   guess(): void {
-    console.log(this.playerTurn);
     if (!this.playerTurn) return;
 
     var word = this.gameForm!.controls.word.value;
@@ -105,6 +118,7 @@ export class LingoComponent extends BaseGameComponent {
       for (let j = 0; j < wordChars.length; j++) {
         var letter: Letter = {} as Letter;
         if (wordToGuessChars[j] === wordChars[j]) letter.match = true;
+        if (wordToGuessChars.includes(wordChars[j])) letter.contains = true;
         letter.character = wordChars[j];
         letterWord.push(letter);
       }

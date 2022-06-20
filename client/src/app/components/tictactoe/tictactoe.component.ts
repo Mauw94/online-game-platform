@@ -31,8 +31,7 @@ export default class TictactoeComponent extends BaseGameComponent {
       // game starts, set initial values
       await gameService.onStartGame(socketService.socket, (options) => {
         this.isGameStarted = true;
-        if (options.symbol === 'x') this.currentPlayer = PlayerIdentifier.X;
-        if (options.symbol === 'o') this.currentPlayer = PlayerIdentifier.O;
+        this.setCurrentPlayer(options.symbol);
         if (options.start) { this.playerTurn = true; } else { this.playerTurn = false; }
 
         gameService.playerToPlay.next(this.currentPlayer);

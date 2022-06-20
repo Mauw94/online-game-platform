@@ -72,6 +72,15 @@ export class BaseGameComponent implements OnInit {
   }
 
   /**
+   * Set the player identifier (x or o)
+   * @param playerIdentifier 
+   */
+  setCurrentPlayer(playerIdentifier: string): void {
+    if (playerIdentifier === 'x') this.currentPlayer = PlayerIdentifier.X;
+    if (playerIdentifier === 'o') this.currentPlayer = PlayerIdentifier.O;
+  }
+
+  /**
    * Determine who's the next player based of currentplayer.
    * @returns 
    */
