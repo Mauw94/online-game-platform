@@ -1,4 +1,4 @@
-import { CellEnum } from "../enums/CellEnum";
+import { PlayerIdentifier } from "../enums/PlayerIdentifier";
 
 
-export type IBoard = CellEnum[][];
+export type IBoard = PlayerIdentifier[][];

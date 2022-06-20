@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseGameComponent } from 'src/app/base-game/base-game.component';
+import { PlayerIdentifier } from 'src/app/lib/shared/enums/PlayerIdentifier';
 import { ApiService } from 'src/app/services/api.service';
 import lingoService from 'src/app/services/lingo.service';
 import { GameType } from '../../lib/shared/enums/gameType';
@@ -84,6 +85,9 @@ export class LingoComponent extends BaseGameComponent {
 
     this.checkValidLetters();
 
+    if (socketService.socket) {
+      gameService.updateGame(socketService.socket, this.matchingLetters, this.deterMineNextPlayer());
+    }
   }
 
   /**

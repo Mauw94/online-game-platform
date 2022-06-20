@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PlayerIdentifier } from '../lib/shared/enums/PlayerIdentifier';
 import { GameType } from '../lib/shared/enums/gameType';
 import { ApiService } from '../services/api.service';
 import gameService from '../services/game.service';
@@ -19,6 +20,7 @@ export class BaseGameComponent implements OnInit {
   public playerTurn: boolean = false;
   public isInRoom: boolean = false;
   public isRoomFull: boolean = false;
+  public currentPlayer: PlayerIdentifier = PlayerIdentifier.EMPTY;
 
   private _apiService: ApiService;
 
@@ -67,5 +69,17 @@ export class BaseGameComponent implements OnInit {
         break;
     }
 
+  }
+
+  /**
+   * Determine who's the next player based of currentplayer.
+   * @returns 
+   */
+  public deterMineNextPlayer(): PlayerIdentifier {
+    var nextPlayer = PlayerIdentifier.EMPTY;
+    if (this.currentPlayer === PlayerIdentifier.X) nextPlayer = PlayerIdentifier.O;
+    if (this.currentPlayer === PlayerIdentifier.O) nextPlayer = PlayerIdentifier.X;
+
+    return nextPlayer;
   }
 }

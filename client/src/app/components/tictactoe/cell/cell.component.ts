@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CellEnum } from '../../../lib/shared/enums/CellEnum';
+import { PlayerIdentifier } from '../../../lib/shared/enums/PlayerIdentifier';
 
 @Component({
     selector: 'tictactoe-cell',
@@ -8,7 +8,7 @@ import { CellEnum } from '../../../lib/shared/enums/CellEnum';
 })
 export class CellComponent implements OnInit {
 
-    @Input() public piece: CellEnum = CellEnum.EMPTY;
+    @Input() public piece: PlayerIdentifier = PlayerIdentifier.EMPTY;
     @Input() public row!: number;
     @Input() public col!: number;
 

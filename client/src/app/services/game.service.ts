@@ -3,13 +3,13 @@ import { Socket } from "socket.io-client";
 import { IBoard } from "../lib/shared/interfaces/IBoard";
 import { IStartGame } from "../lib/shared/interfaces/IStartGame";
 import { GameType } from "../lib/shared/enums/gameType";
-import { CellEnum } from "../lib/shared/enums/CellEnum";
+import { PlayerIdentifier } from "../lib/shared/enums/PlayerIdentifier";
 
 class GameService {
 
     public isInRoom: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public roomId: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    public playerToPlay: BehaviorSubject<CellEnum> = new BehaviorSubject<CellEnum>(CellEnum.EMPTY);
+    public playerToPlay: BehaviorSubject<PlayerIdentifier> = new BehaviorSubject<PlayerIdentifier>(PlayerIdentifier.EMPTY);
     public roomFull: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public gameType: BehaviorSubject<GameType> = new BehaviorSubject<GameType>(GameType.TICTACTOE);
 
@@ -56,7 +56,7 @@ class GameService {
      * @param socket 
      * @param listener 
      */
-    public async onGameUpdate(socket: Socket, listener: (gameState: any, playerToPlay: CellEnum) => void): Promise<any> {
+    public async onGameUpdate(socket: Socket, listener: (gameState: any, playerToPlay: PlayerIdentifier) => void): Promise<any> {
         return new Promise((rs, rj) => {
             rs(socket.on('on_game_update', ({ gameState, playerToPlay }) => listener(gameState, playerToPlay)));
         });
@@ -67,8 +67,8 @@ class GameService {
      * @param socket 
      * @param board 
      */
-    public async updateGame(socket: Socket, board: any, playerToPlay: CellEnum) {
-        socket.emit('update_game', { gameState: board, playerToPlay: playerToPlay });
+    public async updateGame(socket: Socket, gameState: any, playerToPlay: PlayerIdentifier) {
+        socket.emit('update_game', { gameState: gameState, playerToPlay: playerToPlay });
     }
 
     /**

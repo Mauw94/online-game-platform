@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameType } from '../../lib/shared/enums/gameType';
 import gameService from '../../services/game.service';
 import socketService from '../../services/socket.service';
-import { CellEnum } from '../../lib/shared/enums/CellEnum';
+import { PlayerIdentifier } from '../../lib/shared/enums/PlayerIdentifier';
 import { BaseGameComponent } from 'src/app/base-game/base-game.component';
 import { ApiService } from 'src/app/services/api.service';
 
@@ -13,9 +13,7 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export default class TictactoeComponent extends BaseGameComponent {
 
-  public board: CellEnum[][] = [];
-
-  private currentPlayer: CellEnum = CellEnum.EMPTY;
+  public board: PlayerIdentifier[][] = [];
 
   constructor(private apiService: ApiService) {
     super(apiService, GameType.TICTACTOE);
@@ -33,8 +31,8 @@ export default class TictactoeComponent extends BaseGameComponent {
       // game starts, set initial values
       await gameService.onStartGame(socketService.socket, (options) => {
         this.isGameStarted = true;
-        if (options.symbol === 'x') this.currentPlayer = CellEnum.X;
-        if (options.symbol === 'o') this.currentPlayer = CellEnum.O;
+        if (options.symbol === 'x') this.currentPlayer = PlayerIdentifier.X;
+        if (options.symbol === 'o') this.currentPlayer = PlayerIdentifier.O;
         if (options.start) { this.playerTurn = true; } else { this.playerTurn = false; }
 
         gameService.playerToPlay.next(this.currentPlayer);
@@ -79,9 +77,9 @@ export default class TictactoeComponent extends BaseGameComponent {
    */
   move(row: number, col: number): void {
     if (!this.playerTurn) return;
-    if (this.board[row][col] !== CellEnum.EMPTY) return;
+    if (this.board[row][col] !== PlayerIdentifier.EMPTY) return;
 
-    if (!this.isGameOver && this.board[row][col] === CellEnum.EMPTY) {
+    if (!this.isGameOver && this.board[row][col] === PlayerIdentifier.EMPTY) {
       this.board[row][col] = this.currentPlayer;
       if (this.isDraw()) {
         this.isGameOver = true;
@@ -93,10 +91,7 @@ export default class TictactoeComponent extends BaseGameComponent {
     }
 
     if (socketService.socket) {
-      var nextPlayer = CellEnum.EMPTY;
-      if (this.currentPlayer === CellEnum.X) nextPlayer = CellEnum.O;
-      if (this.currentPlayer === CellEnum.O) nextPlayer = CellEnum.X;
-      gameService.updateGame(socketService.socket, this.board, nextPlayer);
+      gameService.updateGame(socketService.socket, this.board, this.deterMineNextPlayer());
     }
   }
 
@@ -106,7 +101,7 @@ export default class TictactoeComponent extends BaseGameComponent {
   isDraw(): boolean {
     for (const colums of this.board) {
       for (const col of colums) {
-        if (col == CellEnum.EMPTY) {
+        if (col == PlayerIdentifier.EMPTY) {
           return false;
         }
       }
@@ -120,7 +115,7 @@ export default class TictactoeComponent extends BaseGameComponent {
   isWin(): boolean {
     // Horizontal
     for (const columns of this.board) {
-      if (columns[0] === columns[1] && columns[0] === columns[2] && columns[0] !== CellEnum.EMPTY) {
+      if (columns[0] === columns[1] && columns[0] === columns[2] && columns[0] !== PlayerIdentifier.EMPTY) {
         return true;
       }
     }
@@ -130,7 +125,7 @@ export default class TictactoeComponent extends BaseGameComponent {
       if (
         this.board[0][col] === this.board[1][col] &&
         this.board[0][col] === this.board[2][col] &&
-        this.board[0][col] !== CellEnum.EMPTY
+        this.board[0][col] !== PlayerIdentifier.EMPTY
       ) {
         return true;
       }
@@ -140,7 +135,7 @@ export default class TictactoeComponent extends BaseGameComponent {
     if (
       this.board[0][0] === this.board[1][1] &&
       this.board[0][0] === this.board[2][2] &&
-      this.board[0][0] !== CellEnum.EMPTY
+      this.board[0][0] !== PlayerIdentifier.EMPTY
     ) {
       return true;
     }
@@ -148,7 +143,7 @@ export default class TictactoeComponent extends BaseGameComponent {
     if (
       this.board[0][2] === this.board[1][1] &&
       this.board[0][2] === this.board[2][0] &&
-      this.board[0][2] !== CellEnum.EMPTY
+      this.board[0][2] !== PlayerIdentifier.EMPTY
     ) {
       return true;
     }
@@ -164,7 +159,7 @@ export default class TictactoeComponent extends BaseGameComponent {
     for (let row = 0; row < 3; row++) {
       this.board[row] = [];
       for (let col = 0; col < 3; col++) {
-        this.board[row][col] = CellEnum.EMPTY;
+        this.board[row][col] = PlayerIdentifier.EMPTY;
       }
     }
 
