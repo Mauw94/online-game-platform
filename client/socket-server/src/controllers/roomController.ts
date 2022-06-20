@@ -18,4 +18,33 @@ export class RoomController {
             socket.emit('roomId', { roomId: socketRooms[0] });
         }
     }
+
+    /**
+     * Listens for join_game event for a user to join a game room.
+     * @param socket 
+     * @param io 
+     * @param message 
+     */
+    @OnMessage('join_game')
+    public async joinGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
+        console.log(socket.id, ' joins room');
+        const connectedSockets = io.sockets.adapter.rooms.get(message.roomId); // Get all the connected sockets to this room
+        const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id); // The rooms the socket is connected to.
+
+        // This socket is already connected to a room or the current room is full.
+        if (socketRooms.length > 0 || connectedSockets && connectedSockets.size == 2) {
+            socket.emit('room_join_error', {
+                error: 'Room is full, please join another room.'
+            });
+        } else {
+            await socket.join(message.roomId);
+            socket.emit('room_joined');
+
+            if (connectedSockets.size == 2) {
+                socket.emit('room_full');
+                socket.to(message.roomId).emit('room_full');
+            }
+        }
+    }
+
 }
