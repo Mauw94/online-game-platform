@@ -6,7 +6,7 @@ import wordDictionaryReader from "../utils/wordDictionaryReader";
 @SocketController()
 export class TicTacToeGameController {
 
-    private gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestate
+    private gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestarted, gamestate, playerturn
 
     /**
      * Receive a start request from the client. Emit event back to the client to start the game.
@@ -38,7 +38,6 @@ export class TicTacToeGameController {
      */
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
-        console.log(message);
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = this.gameStates.get(gameRoom);
 
@@ -46,8 +45,6 @@ export class TicTacToeGameController {
         gameState.gameState = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
         this.gameStates.set(gameRoom, gameState);
-
-        console.log('updated gamestate: ', this.gameStates.get(gameRoom));
 
         socket.emit('on_game_update', message);
         socket.to(gameRoom).emit('on_game_update', message);
@@ -62,6 +59,8 @@ export class TicTacToeGameController {
     @OnMessage('game_win')
     public async onGameWin(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
+        this.gameStates.delete(gameRoom); // Remove from gamestates to reduce memory usage
+
         socket.to(gameRoom).emit('on_game_win', message);
     }
 
@@ -74,8 +73,7 @@ export class TicTacToeGameController {
     public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = this.gameStates.get(gameRoom);
-        console.log(gameRoom);
-        console.log(gameState);
+
         if (gameState) {
             socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
         }
