@@ -4,9 +4,17 @@ import { GameType } from "../lib/shared/enums/gameType";
 import wordDictionaryReader from "../utils/wordDictionaryReader";
 
 @SocketController()
-export class TicTacToeGameController {
+export class GameController {
 
-    private gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestarted, gamestate, playerturn
+    private static gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestarted, gamestate, playerturn
+
+    /**
+     * Return local gamestates.
+     * @returns 
+     */
+    public static getStates(): Map<string, any> {
+        return this.gameStates;
+    }
 
     /**
      * Receive a start request from the client. Emit event back to the client to start the game.
@@ -39,12 +47,14 @@ export class TicTacToeGameController {
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
-        const gameState = this.gameStates.get(gameRoom);
+        const gameState = GameController.gameStates.get(gameRoom);
+
+        console.log('previous gamestate is: ', gameState);
 
         // update gamestate
         gameState.gameState = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
-        this.gameStates.set(gameRoom, gameState);
+        GameController.gameStates.set(gameRoom, gameState);
 
         socket.emit('on_game_update', message);
         socket.to(gameRoom).emit('on_game_update', message);
@@ -59,7 +69,7 @@ export class TicTacToeGameController {
     @OnMessage('game_win')
     public async onGameWin(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
-        this.gameStates.delete(gameRoom); // Remove from gamestates to reduce memory usage
+        GameController.gameStates.delete(gameRoom); // Remove from gamestates to reduce memory usage
 
         socket.to(gameRoom).emit('on_game_win', message);
     }
@@ -72,7 +82,7 @@ export class TicTacToeGameController {
     @OnMessage('game_progress')
     public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
-        const gameState = this.gameStates.get(gameRoom);
+        const gameState = GameController.gameStates.get(gameRoom);
 
         if (gameState) {
             socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
@@ -102,11 +112,11 @@ export class TicTacToeGameController {
             switch (message.gameType) {
                 case GameType.TICTACTOE:
                     this.startTicTacToe(socket, message)
-                    this.gameStates.set(message.roomId, { game: 'tictactoe', started: true, playerToPlay: {}, gameState: {} });
+                    GameController.gameStates.set(message.roomId, { startTime: new Date(), game: 'tictactoe', started: true, playerToPlay: {}, gameState: {} });
                     break;
                 case GameType.WORDGUESSER:
                     this.startWordGuesser(socket, message);
-                    this.gameStates.set(message.roomId, { game: 'lingo', started: true, playerToPlay: {}, gameState: {} });
+                    GameController.gameStates.set(message.roomId, { startTime: new Date(), game: 'lingo', started: true, playerToPlay: {}, gameState: {} });
                     break;
             }
         }

@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 import * as cors from 'cors';
 import "reflect-metadata";
+import gameStateCleanup from './utils/gameStateCleanup';
 
 var indexRouter = require('./routes/index');
 
@@ -34,5 +35,12 @@ app.use(function (err: any, req: any, res: any, next: any) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// run cleanup gamestate every hour
+const minutes = 60;
+const interval = minutes * 60 * 1000;
+setInterval(() => {
+  gameStateCleanup.cleanUp();
+}, interval);
 
 export default app;
