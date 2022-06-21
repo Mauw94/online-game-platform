@@ -52,8 +52,6 @@ export default class TictactoeComponent extends BaseGameComponent {
         }
       });
 
-      // TODO: make gamestate and playerturn generic -> move to basecomponent
-      // TODO: create gameState class to hold values and have better structure
       // when player left the game screen and comes back to a game in progress, get the gamestate, playertoplay states from the server.
       await gameService.checkGameProgress(socketService.socket!, (gameStarted, playerToPlay, gameState) => {
         this.isGameStarted = gameStarted;
