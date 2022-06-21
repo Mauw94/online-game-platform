@@ -49,8 +49,6 @@ export class GameController {
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = GameController.gameStates.get(gameRoom);
 
-        console.log('previous gamestate is: ', gameState);
-
         // update gamestate
         gameState.gameState = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
@@ -83,8 +81,11 @@ export class GameController {
     public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = GameController.gameStates.get(gameRoom);
+        
+        console.log(message);
+        console.log(gameState);
 
-        if (gameState) {
+        if (gameState && gameState.game === message.game) {
             socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
         }
     }

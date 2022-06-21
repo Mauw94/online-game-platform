@@ -127,9 +127,9 @@ class GameService {
      * Check if there's a game in progress.
      * @param socket 
      */
-    public async checkGameProgress(socket: Socket, listener: (gameStarted: boolean, playerToPlay: any, gameState: any) => void): Promise<any> {
+    public async checkGameProgress(socket: Socket, game: string, listener: (gameStarted: boolean, playerToPlay: any, gameState: any) => void): Promise<any> {
         return new Promise((rs, rj) => {
-            socket.emit('game_progress');
+            socket.emit('game_progress', ({game: game}));
             rs(socket.on('found_gamestate', ({ gameStarted, playerToPlay, gameState }) => listener(gameStarted, playerToPlay, gameState)));
         });
     }
