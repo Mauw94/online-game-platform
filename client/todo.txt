@@ -1,0 +1,6 @@
+*   Recreate join game room
+    - Give it a nicer layout
+    - Player can join or leave rooms
+    - Player can see other available rooms to join
+
+*   Implement chat functionality for a room
