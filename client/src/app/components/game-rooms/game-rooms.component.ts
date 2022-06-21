@@ -65,12 +65,14 @@ export class GameRoomsComponent implements OnInit {
    * @param roomId 
    */
   async joinRoom(roomId: string): Promise<void> {
-    console.log('joining ', roomId);
     if (socketService.socket) {
-      const joined = await gameService.joinGameRoom(socketService.socket, roomId);
-      if (joined) {
-        gameService.isInRoom.next(true);
-        gameService.roomId.next(roomId);
+      const left = await gameService.leaveGameRoom(socketService.socket, this.roomId!); // this.roomId is the roomId of the current players room
+      if (left) {
+        const joined = await gameService.joinGameRoom(socketService.socket, roomId);
+        if (joined) {
+          gameService.isInRoom.next(true);
+          gameService.roomId.next(roomId);
+        }
       }
     }
   }
