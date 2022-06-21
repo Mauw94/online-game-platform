@@ -1,10 +1,10 @@
 <div class="status text-center p-4">
     <p>{{statusMessage}}</p>
 </div>
-
+<!-- 
 <div>
     <app-join-room [gameType]="gameType" *ngIf="!isInRoom"></app-join-room>
-</div>
+</div> -->
 
 <div *ngIf="isRoomFull && !isGameStarted" class="game">
     <p class="purple">Enter max letters for the words to guess</p>

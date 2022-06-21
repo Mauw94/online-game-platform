@@ -12,9 +12,6 @@ export class JoinRoomComponent implements OnInit {
   public roomName: string | undefined;
   public isJoining: boolean = false;
 
-  @Input()
-  gameType!: GameType;
-
   constructor() { }
 
   async ngOnInit() {
@@ -31,7 +28,7 @@ export class JoinRoomComponent implements OnInit {
     if (!this.roomName || this.roomName.trim() === '' || !socket) return;
     this.isJoining = true;
 
-    const joined = await gameService.joinGameRoom(socket, this.roomName, this.gameType).catch((err) => {
+    const joined = await gameService.joinGameRoom(socket, this.roomName).catch((err) => {
       alert(err);
     });
 

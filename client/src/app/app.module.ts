@@ -15,6 +15,7 @@ import TictactoeComponent from './components/tictactoe/tictactoe.component';
 import { CellComponent } from './components/tictactoe/cell/cell.component';
 import { JoinRoomComponent } from './components/join-room/join-room.component';
 import { BaseGameComponent } from './base-game/base-game.component';
+import { GameRoomsComponent } from './components/game-rooms/game-rooms.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { BaseGameComponent } from './base-game/base-game.component';
     TictactoeComponent,
     CellComponent,
     JoinRoomComponent,
-    BaseGameComponent
+    BaseGameComponent,
+    GameRoomsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

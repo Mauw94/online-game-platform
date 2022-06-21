@@ -2,9 +2,10 @@
     <p>{{statusMessage}}</p>
 </div>
 
-<div>
+<!-- <div *ngIf="!isInRoom">
     <app-join-room [gameType]="gameType" *ngIf="!isInRoom"></app-join-room>
-</div>
+    <p>Join a game room before playing!</p>
+</div> -->
 
 <div *ngIf="isRoomFull && !isGameStarted" class="game">
     <button (click)="startGame()">Start the game</button>

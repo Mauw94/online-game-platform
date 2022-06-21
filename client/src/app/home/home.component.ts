@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import gameService from '../services/game.service';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,9 @@ export class HomeComponent implements OnInit {
     // this.authService.isAuthenticated().subscribe(authenticated => {
     //   this.authenticated = authenticated;
     // });
+    gameService.isInRoom.subscribe(inRoom => {
+      this.isInRoom = inRoom;
+    });
   }
 
   /**

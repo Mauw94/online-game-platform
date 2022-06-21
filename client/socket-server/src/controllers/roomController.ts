@@ -14,8 +14,12 @@ export class RoomController {
     public async getRoomId(@SocketIO() io: Server, @ConnectedSocket() socket: Socket) {
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id);
 
+        console.log(socketRooms);
+
         if (socketRooms.length > 0) {
             socket.emit('roomId', { roomId: socketRooms[0] });
+        } else {
+            socket.emit('no_in_room');
         }
     }
 

@@ -1,4 +1,4 @@
-<div *ngIf="authenticated">
+<div *ngIf="isInRoom">
     <div class="mainContainer">
         <div class="card cardBoxes">
             <div class="card-body">
@@ -15,7 +15,4 @@
             </div>
         </div>
     </div>
-</div>
-<div *ngIf="!authenticated" class="mainContainer">
-    <h4>Please login to play games.</h4>
 </div>
