@@ -1,4 +1,6 @@
 .gameRoomContainer {
     width: 15%;
     position: fixed;
+    display: flex;
+    z-index: 1;
 }

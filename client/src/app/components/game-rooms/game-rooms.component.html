@@ -1,13 +1,16 @@
-<div class="card text-center gameRoomContainer">
+<div class="card gameRoomContainer">
     <div class="card-header">
-        Game joins
+        Room: {{ roomId ? roomId : 'no room joined' }}<button (click)="leaveCurrentRoom()" [disabled]="!isInRoom"
+            class="btn-sm right">Leave</button>
     </div>
-    <div class="card-body">
-        <h5 class="card-title">Special title treatment</h5>
-        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        <button (click)="LeaveCurrentRoom()">Go somewhere</button>
+    <div class="card-body text-left">
+        <!-- <h4 class="card-title">{{ isInRoom ? 'Join a different game room' : 'Create or join a room'}}asd</h4> -->
+        <div *ngFor="let room of availableRooms">
+            <p>Room: <button (click)="joinRoom(room)" [disabled]="room === roomId"
+                    class="card-text btn-sm">{{room}}</button></p>
+        </div>
     </div>
     <div class="card-footer text-muted">
-        Connected
+        {{ isConnected ? 'Connected' : 'Not connected'}}
     </div>
 </div>

@@ -1,14 +1,12 @@
 import { BehaviorSubject } from "rxjs";
 import { Socket } from "socket.io-client";
-import { IBoard } from "../lib/shared/interfaces/IBoard";
-import { IStartGame } from "../lib/shared/interfaces/IStartGame";
 import { GameType } from "../lib/shared/enums/gameType";
 import { PlayerIdentifier } from "../lib/shared/enums/PlayerIdentifier";
 
 class GameService {
 
     public isInRoom: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public roomId: BehaviorSubject<string> = new BehaviorSubject<string>('');
+    public roomId: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
     public playerToPlay: BehaviorSubject<PlayerIdentifier> = new BehaviorSubject<PlayerIdentifier>(PlayerIdentifier.EMPTY);
     public roomFull: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public gameType: BehaviorSubject<GameType> = new BehaviorSubject<GameType>(GameType.TICTACTOE);
@@ -26,6 +24,19 @@ class GameService {
             socket.emit('join_game', { roomId: roomId });
             socket.on('room_joined', () => rs(true));
             socket.on('room_join_error', ({ error }) => rj(error));
+        });
+    }
+
+    /**
+     * Leave the current game room.
+     * @param socket 
+     * @param roomId 
+     * @returns 
+     */
+    public async leaveGameRoom(socket: Socket, roomId: string): Promise<boolean> {
+        return new Promise((rs, rj) => {
+            socket.emit('leave_room', { roomId: roomId });
+            rs(true);
         });
     }
 

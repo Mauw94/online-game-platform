@@ -168,7 +168,7 @@ export default class TictactoeComponent extends BaseGameComponent {
    * Restart the game.
    */
   async restart(): Promise<void> {
-    await gameService.restartGame(socketService.socket!, gameService.roomId.getValue(), GameType.TICTACTOE);
+    await gameService.restartGame(socketService.socket!, gameService.roomId.getValue()!, GameType.TICTACTOE);
   }
 
   /**

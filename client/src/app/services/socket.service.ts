@@ -1,7 +1,10 @@
+import { BehaviorSubject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
 class SocketService {
+    
     public socket: Socket | null = null;
+    public connected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     /**
      * Connect to the socket server.

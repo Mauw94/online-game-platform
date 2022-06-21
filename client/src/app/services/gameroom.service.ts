@@ -14,6 +14,29 @@ class GameroomService {
             socket.on('not_in_room', () => rj());
         });
     }
+
+    /**
+     * Get all the available game rooms to join.
+     * @param socket 
+     * @returns 
+     */
+    public async getAllAvailableRooms(socket: Socket): Promise<any> {
+        return new Promise((rs, rj) => {
+            rs(socket.emit('all_available_rooms'));
+        });
+    }
+
+    /**
+     * Listen to available rooms event.
+     * @param socket 
+     * @param listener 
+     * @returns 
+     */
+    public async onGetAllAvailableRooms(socket: Socket, listener: (availableRooms: string[]) => void): Promise<void> {
+        return new Promise((rs, rj) => {
+            socket.on('on_all_available_rooms', (availableRooms) => rs(listener(availableRooms)));
+        });
+    }
 }
 
 export default new GameroomService();

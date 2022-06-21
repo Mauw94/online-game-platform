@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import gameService from 'src/app/services/game.service';
 import gameroomService from 'src/app/services/gameroom.service';
 import socketService from 'src/app/services/socket.service';
 
@@ -9,19 +10,77 @@ import socketService from 'src/app/services/socket.service';
 })
 export class GameRoomsComponent implements OnInit {
 
+  public isConnected: boolean = false;
+  public isInRoom: boolean = false;
+  public roomId: string | undefined;
+  public availableRooms: string[] = [];
+
   constructor() { }
 
   async ngOnInit() {
+    socketService.connected.subscribe((connected: boolean) => {
+      this.isConnected = connected;
+    });
+    gameService.isInRoom.subscribe((inRoom: boolean) => {
+      this.isInRoom = inRoom;
+    });
+    gameService.roomId.subscribe((roomId: string | undefined) => {
+      this.roomId = roomId;
+    });
+  }
+
+  async ngAfterViewInit() {
     if (socketService.socket) {
-      const roomId = await gameroomService.currentGameRoom(socketService.socket);
-      console.log(roomId);
+      await this.getAllAvailableRooms();
+
+      await gameroomService.onGetAllAvailableRooms(socketService.socket, (availableRooms) => {
+        this.availableRooms = availableRooms;
+      });
     }
   }
 
   /**
    * Leave current game room.
    */
-  LeaveCurrentRoom(): void {
+  async leaveCurrentRoom(): Promise<void> {
+    if (socketService.socket && gameService.roomId.getValue() !== undefined) {
+      const leftRoom = await gameService.leaveGameRoom(socketService.socket, gameService.roomId.getValue()!);
+      if (leftRoom) {
+        gameService.isInRoom.next(false);
+        gameService.roomId.next(undefined);
+        await this.getAllAvailableRooms();
+      }
+    }
+  }
 
+  /**
+   * Leaves the current room and create a new room.
+   */
+  async createNewRoom(): Promise<void> {
+    await this.leaveCurrentRoom();
+  }
+
+  /**
+   * Join a game room.
+   * @param roomId 
+   */
+  async joinRoom(roomId: string): Promise<void> {
+    console.log('joining ', roomId);
+    if (socketService.socket) {
+      const joined = await gameService.joinGameRoom(socketService.socket, roomId);
+      if (joined) {
+        gameService.isInRoom.next(true);
+        gameService.roomId.next(roomId);
+      }
+    }
+  }
+
+  /**
+   * Emit event to get all the available rooms.
+   */
+  private async getAllAvailableRooms(): Promise<void> {
+    await gameroomService.getAllAvailableRooms(socketService.socket!).catch((err) => {
+      alert(err);
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import gameroomService from 'src/app/services/gameroom.service';
 import { GameType } from '../../lib/shared/enums/gameType';
 import gameService from '../../services/game.service';
 import socketService from '../../services/socket.service';
@@ -31,6 +32,10 @@ export class JoinRoomComponent implements OnInit {
     const joined = await gameService.joinGameRoom(socket, this.roomName).catch((err) => {
       alert(err);
     });
+
+
+    // TODO: remove this after testing
+    gameroomService.getAllAvailableRooms(socket);
 
     if (joined) {
       gameService.isInRoom.next(true);

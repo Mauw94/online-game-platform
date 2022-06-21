@@ -14,8 +14,6 @@ export class RoomController {
     public async getRoomId(@SocketIO() io: Server, @ConnectedSocket() socket: Socket) {
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id);
 
-        console.log(socketRooms);
-
         if (socketRooms.length > 0) {
             socket.emit('roomId', { roomId: socketRooms[0] });
         } else {
@@ -31,7 +29,7 @@ export class RoomController {
      */
     @OnMessage('join_game')
     public async joinGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
-        console.log(socket.id, ' joins room');
+        console.log('joining room: ', message.roomId);
         const connectedSockets = io.sockets.adapter.rooms.get(message.roomId); // Get all the connected sockets to this room
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id); // The rooms the socket is connected to.
 
@@ -49,6 +47,41 @@ export class RoomController {
                 socket.to(message.roomId).emit('room_full');
             }
         }
+    }
+
+    /**
+     * Leave the current room.
+     * @param socket 
+     * @param io 
+     * @param message 
+     */
+    @OnMessage('leave_room')
+    public async leaveRoom(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
+        const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id);
+        console.log('leaving room: ', message.roomId);
+        if (socketRooms.length > 0)
+            socket.leave(message.roomId);
+    }
+
+    /**
+     * Get all the available rooms.
+     * @param socket 
+     * @param io 
+     * @param message 
+     */
+    @OnMessage('all_available_rooms')
+    public async getAllAvailableRooms(@ConnectedSocket() socket: Socket, @SocketIO() io: Server) {
+        const availableRooms: string[] = [];
+        const rooms = io.sockets.adapter.rooms;
+
+        rooms.forEach((value, key) => {
+            var socketsInRoom = rooms.get(key);
+            if (socketsInRoom.size < 2 && !Array.from(socketsInRoom.values()).includes(key)) {
+                availableRooms.push(key);
+            }
+        });
+
+        io.emit('on_all_available_rooms', availableRooms); // emit to all connected sockets
     }
 
 }
