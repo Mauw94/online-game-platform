@@ -16,7 +16,7 @@ export interface GameState {
 @SocketController()
 export class GameController {
 
-    private static gameStates: Map<string, GameState> = new Map<string, GameState>(); // key = room id, value = gamestarted, gamestate, playerturn
+    private static gameStates: Map<string, GameState> = new Map<string, GameState>(); // key = room id, value = game state
 
     /**
      * Return local gamestates.
@@ -34,17 +34,6 @@ export class GameController {
      */
     @OnMessage('on_start_game')
     public async onStartGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
-        this.startNewGame(io, socket, message);
-    }
-
-    /**
-     * Send game restart event.
-     * @param io 
-     * @param socket 
-     * @param message 
-     */
-    @OnMessage('restart_game')
-    public async restartGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         this.startNewGame(io, socket, message);
     }
 
@@ -159,8 +148,8 @@ export class GameController {
     private async startWordGuesser(socket: Socket, message: any): Promise<void> {
         var wordToGuess = await wordDictionaryReader.getRandomWordAsync(message.letterCount);
 
-        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x', game: 'lingo' });
-        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o', game: 'lingo' });
+        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x', gameType: message.gameType });
+        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o', gameType: message.gameType });
     }
 
 }

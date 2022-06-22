@@ -40,6 +40,7 @@ export class LingoComponent extends BaseGameComponent {
   async ngOnInit() {
     lingoService.letterCount.next(this.letterCount);
     super.ngOnInit();
+    await super.checkGameRoomState({ roomId: gameService.roomId.getValue()!, gameType: this.gameType, letterCount: this.letterCount });
   }
 
   async ngAfterViewInit() {
@@ -48,7 +49,7 @@ export class LingoComponent extends BaseGameComponent {
 
       await gameService.onStartGame(socketService.socket, (options) => {
         console.log(options);
-        if (options.game !== 'lingo') return;
+        if (options.gameType !== this.gameType) return;
 
         console.log(options.wordToGuess);
         this.matchingLetters = [];

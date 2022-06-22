@@ -31,9 +31,6 @@ export class BaseGameComponent implements OnInit {
 
   async ngOnInit() {
 
-    // Checks room state, if both players are on the game page, the game starts
-    gameService.checkGameRoomState(socketService.socket!, gameService.roomId.getValue()!, this.gameType);
-
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
       if (!this.isGameStarted && this.isInRoom) {
@@ -95,11 +92,20 @@ export class BaseGameComponent implements OnInit {
    * Determine who's the next player based of currentplayer.
    * @returns 
    */
-  public deterMineNextPlayer(): PlayerIdentifier {
+  deterMineNextPlayer(): PlayerIdentifier {
     var nextPlayer = PlayerIdentifier.EMPTY;
     if (this.currentPlayer === PlayerIdentifier.X) nextPlayer = PlayerIdentifier.O;
     if (this.currentPlayer === PlayerIdentifier.O) nextPlayer = PlayerIdentifier.X;
 
     return nextPlayer;
+  }
+
+  /**
+   * Emit check the game room state.
+   * if both players are on the game page, the game starts
+   * @param message 
+   */
+  async checkGameRoomState(message: any) {
+    await gameService.checkGameRoomState(socketService.socket!, message);
   }
 }

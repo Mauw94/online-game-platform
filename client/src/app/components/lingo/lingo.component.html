@@ -2,12 +2,12 @@
     <p>{{statusMessage}}</p>
 </div>
 
-<div *ngIf="isRoomFull && !isGameStarted" class="game">
+<!-- <div *ngIf="isRoomFull && !isGameStarted" class="game">
     <p class="purple">Enter max letters for the words to guess</p>
     <input (change)="updateLetterCount()" type="number" class="input" min="4" max="10" [(ngModel)]="letterCount"
         placeholder="Word letter count">
     <button (click)="startGame()">Start the game</button>
-</div>
+</div> -->
 
 <div *ngIf="isGameStarted">
     <form [formGroup]="gameForm">

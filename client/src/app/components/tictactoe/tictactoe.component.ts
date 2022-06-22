@@ -21,6 +21,7 @@ export default class TictactoeComponent extends BaseGameComponent {
 
   async ngOnInit() {
     super.ngOnInit();
+    await super.checkGameRoomState({ roomId: gameService.roomId.getValue()!, gameType: this.gameType });
   }
 
   async ngAfterViewInit() {
@@ -164,7 +165,7 @@ export default class TictactoeComponent extends BaseGameComponent {
    * Restart the game.
    */
   async restart(): Promise<void> {
-    await gameService.restartGame(socketService.socket!, gameService.roomId.getValue()!, GameType.TICTACTOE);
+    // TODO: new game
   }
 
   /**
