@@ -1,7 +1,4 @@
-*   Recreate join game room
-    - Give it a nicer layout
-    - Player can join or leave rooms
-    - Player can see other available rooms to join
+*   Player can play vs a bot or someone else
 
 *   Implement chat functionality for a room
 
@@ -9,6 +6,9 @@
 
 *   Show open game rooms with the game that's going to be played
 
+
+
+!*   Emit event when player clicks on tictactoe -> is in room and is in the game -> at 2 players, start playing
 
 
 

@@ -29,7 +29,7 @@ export default class TictactoeComponent extends BaseGameComponent {
 
       // game starts, set initial values
       await gameService.onStartGame(socketService.socket, (options) => {
-        if (options.game !== 'tictactoe') return;
+        if (options.gameType !== this.gameType) return;
 
         this.isGameStarted = true;
         this.setCurrentPlayer(options.symbol);

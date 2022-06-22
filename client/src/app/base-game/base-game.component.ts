@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PlayerIdentifier } from '../lib/shared/enums/PlayerIdentifier';
 import { GameType } from '../lib/shared/enums/gameType';
 import { ApiService } from '../services/api.service';
@@ -30,6 +30,10 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    // Checks room state, if both players are on the game page, the game starts
+    gameService.checkGameRoomState(socketService.socket!, gameService.roomId.getValue()!, this.gameType);
+
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
       if (!this.isGameStarted && this.isInRoom) {
@@ -43,14 +47,20 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
-    console.log(this.gameType);
-    console.log(gameService.gameType.getValue());
     if (gameService.gameType.getValue() !== this.gameType) return;
 
     await gameService.onGameWin(socketService.socket!, (message: string) => {
       this.isGameOver = true;
       this.statusMessage = message;
     });
+  }
+
+  /**
+   * Unload component.
+   */
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    console.log('Cleared');
   }
 
   /**
