@@ -17,6 +17,7 @@ import { JoinRoomComponent } from './components/join-room/join-room.component';
 import { BaseGameComponent } from './base-game/base-game.component';
 import { GameRoomsComponent } from './components/game-rooms/game-rooms.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
+import { RoomGuard } from './guards/room.guard';
 
 @NgModule({
   declarations: [
@@ -39,8 +40,8 @@ import { ChatRoomComponent } from './components/chat-room/chat-room.component';
     ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'lingo', component: LingoComponent }, //canActivate: [AuthorizeGuard] },
-      { path: 'tictactoe', component: TictactoeComponent }, //canActivate: [AuthorizeGuard] }
+      { path: 'lingo', component: LingoComponent, canActivate: [RoomGuard] },
+      { path: 'tictactoe', component: TictactoeComponent, canActivate: [RoomGuard] }
     ])
   ],
   providers: [
