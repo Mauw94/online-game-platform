@@ -43,6 +43,8 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
+    console.log(this.gameType);
+    console.log(gameService.gameType.getValue());
     if (gameService.gameType.getValue() !== this.gameType) return;
 
     await gameService.onGameWin(socketService.socket!, (message: string) => {

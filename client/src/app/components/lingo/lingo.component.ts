@@ -47,6 +47,9 @@ export class LingoComponent extends BaseGameComponent {
       super.ngAfterViewInit();
 
       await gameService.onStartGame(socketService.socket, (options) => {
+        console.log(options);
+        if (options.game !== 'lingo') return;
+
         console.log(options.wordToGuess);
         this.matchingLetters = [];
         this.guessedWordsHistory = [];

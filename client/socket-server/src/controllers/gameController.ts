@@ -81,9 +81,6 @@ export class GameController {
     public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = GameController.gameStates.get(gameRoom);
-        
-        console.log(message);
-        console.log(gameState);
 
         if (gameState && gameState.game === message.game) {
             socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
@@ -129,8 +126,8 @@ export class GameController {
      * @param message 
      */
     private startTicTacToe(socket: Socket, message: any): void {
-        socket.emit('start_game', { start: true, symbol: 'x' });
-        socket.to(message.roomId).emit('start_game', { start: false, symbol: 'o' });
+        socket.emit('start_game', { start: true, symbol: 'x', game: 'tictactoe' });
+        socket.to(message.roomId).emit('start_game', { start: false, symbol: 'o', game: 'tictactoe' });
     }
 
     /**
@@ -142,8 +139,8 @@ export class GameController {
         console.log(message.letterCount);
         var wordToGuess = await wordDictionaryReader.getRandomWordAsync(message.letterCount);
 
-        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x' });
-        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o' });
+        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x', game: 'lingo' });
+        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o', game: 'lingo' });
     }
 
 }

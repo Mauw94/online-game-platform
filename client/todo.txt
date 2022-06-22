@@ -8,3 +8,11 @@
 *   Disable switching game rooms when playing a game OR end the game when switching game rooms
 
 *   Show open game rooms with the game that's going to be played
+
+
+
+
+----- BUGS -----
+
+*   When other player leaves the room, send a message and end game for other player
+*   When a player starts the game, don't show start game option for the other player anymore
