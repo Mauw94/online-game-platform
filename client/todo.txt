@@ -6,3 +6,5 @@
 *   Implement chat functionality for a room
 
 *   Disable switching game rooms when playing a game OR end the game when switching game rooms
+
+*   Show open game rooms with the game that's going to be played

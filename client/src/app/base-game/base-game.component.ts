@@ -32,8 +32,6 @@ export class BaseGameComponent implements OnInit {
   async ngOnInit() {
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
-      console.log(this.isInRoom);
-      console.log(this.isGameStarted);
       if (!this.isGameStarted && this.isInRoom) {
         this.statusMessage = 'Waiting for other player to join..';
       }
@@ -41,9 +39,6 @@ export class BaseGameComponent implements OnInit {
 
     gameService.roomFull.subscribe(roomFull => {
       this.isRoomFull = roomFull;
-      if (this.isRoomFull) {
-        this.statusMessage = 'Waiting for host to start the game..'
-      }
     });
   }
 

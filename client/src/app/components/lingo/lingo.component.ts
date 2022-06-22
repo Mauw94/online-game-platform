@@ -26,11 +26,11 @@ export interface Letter {
 export class LingoComponent extends BaseGameComponent {
 
   public letterCount: number = 4;
-  public inputTextLength: number = 4;
   public gameForm!: FormGroup;
   public matchingLetters: MatchingLetters[] = [];
+  public wordToGuess: string = '';
+  public wordToGuessLength: number | undefined;
 
-  private wordToGuess: string = '';
   private guessedWordsHistory: string[] = [];
 
   constructor(private apiService: ApiService) {
@@ -38,7 +38,7 @@ export class LingoComponent extends BaseGameComponent {
   }
 
   async ngOnInit() {
-    this.statusMessage = '';
+    lingoService.letterCount.next(this.letterCount);
     super.ngOnInit();
   }
 
@@ -48,10 +48,11 @@ export class LingoComponent extends BaseGameComponent {
 
       await gameService.onStartGame(socketService.socket, (options) => {
         console.log(options.wordToGuess);
+        this.matchingLetters = [];
+        this.guessedWordsHistory = [];
         super.isGameStarted = true;
         this.wordToGuess = options.wordToGuess;
-        this.inputTextLength = this.wordToGuess?.length;
-        this.statusMessage = 'Have fun';
+        this.wordToGuessLength = this.wordToGuess.length;
 
         this.setCurrentPlayer(options.symbol);
         if (options.start) { this.playerTurn = true; } else { this.playerTurn = false; }
@@ -61,9 +62,10 @@ export class LingoComponent extends BaseGameComponent {
 
       this.gameForm = new FormGroup({
         word: new FormControl('', [
-          Validators.required,
-          Validators.minLength(this.inputTextLength),
-          Validators.maxLength(this.inputTextLength)])
+          Validators.required
+          // Validators.minLength(this.wordToGuess.length),
+          // Validators.maxLength(this.wordToGuess.length)
+        ])
       });
 
       await gameService.onGameUpdate(socketService.socket, (gameState, playerToPlay) => {

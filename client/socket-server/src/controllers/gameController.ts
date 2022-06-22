@@ -139,6 +139,7 @@ export class GameController {
      * @param message 
      */
     private async startWordGuesser(socket: Socket, message: any): Promise<void> {
+        console.log(message.letterCount);
         var wordToGuess = await wordDictionaryReader.getRandomWordAsync(message.letterCount);
 
         socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x' });

@@ -20,7 +20,6 @@ export default class TictactoeComponent extends BaseGameComponent {
   }
 
   async ngOnInit() {
-    this.statusMessage = '';
     super.ngOnInit();
   }
 
@@ -30,7 +29,6 @@ export default class TictactoeComponent extends BaseGameComponent {
 
       // game starts, set initial values
       await gameService.onStartGame(socketService.socket, (options) => {
-        console.log('starting');
         this.isGameStarted = true;
         this.setCurrentPlayer(options.symbol);
         if (options.start) { this.playerTurn = true; } else { this.playerTurn = false; }
@@ -53,19 +51,6 @@ export default class TictactoeComponent extends BaseGameComponent {
         }
       });
 
-      // when player left the game screen and comes back to a game in progress, get the gamestate, playertoplay states from the server.
-      await gameService.checkGameProgress(socketService.socket!, 'tictactoe', (gameStarted, playerToPlay, gameState) => {
-        console.log('found some in progress');
-        this.isGameStarted = gameStarted;
-        this.currentPlayer = gameService.playerToPlay.getValue();
-        if (gameService.playerToPlay.getValue() === playerToPlay) {
-          this.playerTurn = true;
-        } else {
-          this.playerTurn = false;
-        }
-
-        this.board = gameState;
-      });
     }
   }
 
@@ -154,6 +139,16 @@ export default class TictactoeComponent extends BaseGameComponent {
    * Start a new game.
    */
   newGame(): void {
+    this.initBoard();
+
+    this.isGameOver = false;
+    this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
+  }
+
+  /**
+   * Init the game board.
+   */
+  private initBoard(): void {
     this.board = [];
     for (let row = 0; row < 3; row++) {
       this.board[row] = [];
@@ -161,9 +156,6 @@ export default class TictactoeComponent extends BaseGameComponent {
         this.board[row][col] = PlayerIdentifier.EMPTY;
       }
     }
-
-    this.isGameOver = false;
-    this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
   }
 
   /**
