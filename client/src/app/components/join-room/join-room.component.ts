@@ -35,11 +35,12 @@ export class JoinRoomComponent implements OnInit {
 
 
     // TODO: remove this after testing
-    gameroomService.getAllAvailableRooms(socket);
+
 
     if (joined) {
       gameService.isInRoom.next(true);
       gameService.roomId.next(this.roomName);
+      await gameroomService.getAllAvailableRooms(socket);
     }
     this.isJoining = false;
   }

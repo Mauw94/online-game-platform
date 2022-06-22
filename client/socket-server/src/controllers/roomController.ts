@@ -81,6 +81,9 @@ export class RoomController {
             }
         });
 
+        console.log('available rooms');
+        console.log(availableRooms);
+        
         io.emit('on_all_available_rooms', availableRooms); // emit to all connected sockets
     }
 
