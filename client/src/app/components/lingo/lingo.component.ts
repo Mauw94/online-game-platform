@@ -38,8 +38,8 @@ export class LingoComponent extends BaseGameComponent {
   }
 
   async ngOnInit() {
-    super.ngOnInit();
     this.statusMessage = '';
+    super.ngOnInit();
   }
 
   async ngAfterViewInit() {
