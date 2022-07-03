@@ -30,7 +30,6 @@ export class RoomController {
      */
     @OnMessage('join_game')
     public async joinGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
-        console.log('joining room: ', message.roomId);
         const connectedSockets = io.sockets.adapter.rooms.get(message.roomId); // Get all the connected sockets to this room
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id); // The rooms the socket is connected to.
 
@@ -59,7 +58,6 @@ export class RoomController {
     @OnMessage('leave_room')
     public async leaveRoom(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id);
-        console.log('leaving room: ', message.roomId);
         if (socketRooms.length > 0)
             socket.leave(message.roomId);
     }

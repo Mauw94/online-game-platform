@@ -3,16 +3,26 @@ import { Socket, Server } from "socket.io";
 import { GameType } from "../lib/shared/enums/gameType";
 import wordDictionaryReader from "../utils/dictionaryReader";
 
+// startTime: new Date(), game: message.gameType, started: false, playerToPlay: {}, gameState: {}, players: socket.id
+export interface GameState {
+    startTime: Date;
+    gameType: GameType;
+    started: boolean;
+    playerToPlay: string;
+    state: any;
+    players: string[];
+}
+
 @SocketController()
 export class GameController {
 
-    private static gameStates: Map<string, any> = new Map<string, any>(); // key = room id, value = gamestarted, gamestate, playerturn
+    private static gameStates: Map<string, GameState> = new Map<string, GameState>(); // key = room id, value = game state
 
     /**
      * Return local gamestates.
      * @returns 
      */
-    public static getStates(): Map<string, any> {
+    public static getStates(): Map<string, GameState> {
         return this.gameStates;
     }
 
@@ -24,17 +34,6 @@ export class GameController {
      */
     @OnMessage('on_start_game')
     public async onStartGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
-        this.startNewGame(io, socket, message);
-    }
-
-    /**
-     * Send game restart event.
-     * @param io 
-     * @param socket 
-     * @param message 
-     */
-    @OnMessage('restart_game')
-    public async restartGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         this.startNewGame(io, socket, message);
     }
 
@@ -52,7 +51,7 @@ export class GameController {
         const gameState = GameController.gameStates.get(gameRoom);
 
         // update gamestate
-        gameState.gameState = message.gameState;
+        gameState.state = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
         GameController.gameStates.set(gameRoom, gameState);
 
@@ -75,20 +74,30 @@ export class GameController {
     }
 
     /**
-     * Check if there's a game in progress for the current socket and room.
-     * @param io 
+     * Track who's in the game room and in the game.
      * @param socket 
+     * @param io 
+     * @param message 
      */
-    @OnMessage('game_progress')
-    public async checkGameProgress(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
-        const gameRoom = this.getSocketGameRoom(socket);
-        const gameState = GameController.gameStates.get(gameRoom);
-        
-        console.log(message);
+    @OnMessage('in_game')
+    public async inGameRoomAndInGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
+        console.log('------checking the game room state ------');
+        const gameState = GameController.gameStates.get(message.roomId);
         console.log(gameState);
-
-        if (gameState && gameState.game === message.game) {
-            socket.emit('found_gamestate', { gameStarted: gameState.started, playerToPlay: gameState.playerToPlay, gameState: gameState.gameState });
+        console.log(socket.id);
+        if (gameState !== undefined && gameState.gameType === message.gameType) {
+            if (!gameState.players.includes(socket.id)) {
+                console.log('added the 2nd player');
+                gameState.players.push(socket.id);
+            }
+            if (gameState.players.length > 1) {
+                gameState.started = true;
+                console.log(gameState);
+                console.log('starting new game', message.gameType);
+                this.startNewGame(io, socket, message);
+            }
+        } else {
+            GameController.gameStates.set(message.roomId, { startTime: new Date(), gameType: message.gameType, started: false, playerToPlay: '', state: {}, players: [socket.id] });
         }
     }
 
@@ -115,11 +124,9 @@ export class GameController {
             switch (message.gameType) {
                 case GameType.TICTACTOE:
                     this.startTicTacToe(socket, message)
-                    GameController.gameStates.set(message.roomId, { startTime: new Date(), game: 'tictactoe', started: true, playerToPlay: {}, gameState: {} });
                     break;
                 case GameType.WORDGUESSER:
                     this.startWordGuesser(socket, message);
-                    GameController.gameStates.set(message.roomId, { startTime: new Date(), game: 'lingo', started: true, playerToPlay: {}, gameState: {} });
                     break;
             }
         }
@@ -131,8 +138,8 @@ export class GameController {
      * @param message 
      */
     private startTicTacToe(socket: Socket, message: any): void {
-        socket.emit('start_game', { start: true, symbol: 'x' });
-        socket.to(message.roomId).emit('start_game', { start: false, symbol: 'o' });
+        socket.emit('start_game', { start: true, symbol: 'o', gameType: message.gameType });
+        socket.to(message.roomId).emit('start_game', { start: false, symbol: 'x', gameType: message.gameType });
     }
 
     /**
@@ -143,8 +150,8 @@ export class GameController {
     private async startWordGuesser(socket: Socket, message: any): Promise<void> {
         var wordToGuess = await wordDictionaryReader.retrieveWord(message.letterCount);
 
-        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x' });
-        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o' });
+        socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x', gameType: message.gameType });
+        socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o', gameType: message.gameType });
     }
 
 }

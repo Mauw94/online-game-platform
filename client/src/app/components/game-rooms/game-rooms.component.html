@@ -1,11 +1,13 @@
 <div class="card gameRoomContainer">
     <div class="card-header">
-        Room: {{ roomId ? roomId : 'no room joined' }}<button (click)="leaveCurrentRoom()" [disabled]="!isInRoom"
-            class="btn-sm right">Leave</button>
+        <span>Joined room: {{ roomId ? roomId : 'no room joined' }}</span><button *ngIf="isInRoom" (click)="leaveCurrentRoom()"
+            class="btn btn-danger btn-sm" style="float: right; margin-top: 0">Leave</button>
     </div>
     <div class="card-body text-left">
         <!-- <h4 class="card-title">{{ isInRoom ? 'Join a different game room' : 'Create or join a room'}}asd</h4> -->
         <div *ngFor="let room of availableRooms">
+            <h4 class="text-center purple">Available rooms</h4>
+            <hr class="purple">
             <p>Room: <button (click)="joinRoom(room)" [disabled]="room === roomId"
                     class="card-text btn-sm">{{room}}</button></p>
         </div>

@@ -1,8 +1,9 @@
 <body>
   <app-nav-menu></app-nav-menu>
-  <div class="container">
+  <div>
     <app-game-rooms></app-game-rooms>
     <app-join-room *ngIf="!isInRoom"></app-join-room>
+    <!-- <app-chat-room></app-chat-room> -->
     <router-outlet></router-outlet>
   </div>
 </body>

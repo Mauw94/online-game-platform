@@ -112,25 +112,14 @@ class GameService {
     }
 
     /**
-     * Restart the game.
+     * Check the gameroom state.
      * @param socket 
-     * @param roomid 
-     * @param gameType
+     * @param roomId 
+     * @param gameType 
      */
-    public async restartGame(socket: Socket, roomId: string, gameType: GameType): Promise<any> {
+    public async checkGameRoomState(socket: Socket, message: any): Promise<any> {
         return new Promise((rs, rj) => {
-            rs(socket.emit('restart_game', { roomId: roomId, gameType: gameType }));
-        });
-    }
-
-    /**
-     * Check if there's a game in progress.
-     * @param socket 
-     */
-    public async checkGameProgress(socket: Socket, game: string, listener: (gameStarted: boolean, playerToPlay: any, gameState: any) => void): Promise<any> {
-        return new Promise((rs, rj) => {
-            socket.emit('game_progress', ({game: game}));
-            rs(socket.on('found_gamestate', ({ gameStarted, playerToPlay, gameState }) => listener(gameStarted, playerToPlay, gameState)));
+            rs(socket.emit('in_game', { roomId: message.roomId, gameType: message.gameType, letterCount: message.letterCount }));
         });
     }
 

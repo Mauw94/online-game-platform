@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PlayerIdentifier } from '../lib/shared/enums/PlayerIdentifier';
 import { GameType } from '../lib/shared/enums/gameType';
 import { ApiService } from '../services/api.service';
@@ -30,6 +30,7 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngOnInit() {
+
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
       if (!this.isGameStarted && this.isInRoom) {
@@ -39,7 +40,6 @@ export class BaseGameComponent implements OnInit {
 
     gameService.roomFull.subscribe(roomFull => {
       this.isRoomFull = roomFull;
-      this.statusMessage = 'Waiting for host to start the game..'
     });
   }
 
@@ -50,6 +50,14 @@ export class BaseGameComponent implements OnInit {
       this.isGameOver = true;
       this.statusMessage = message;
     });
+  }
+
+  /**
+   * Unload component.
+   */
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    console.log('Cleared');
   }
 
   /**
@@ -84,11 +92,20 @@ export class BaseGameComponent implements OnInit {
    * Determine who's the next player based of currentplayer.
    * @returns 
    */
-  public deterMineNextPlayer(): PlayerIdentifier {
+  deterMineNextPlayer(): PlayerIdentifier {
     var nextPlayer = PlayerIdentifier.EMPTY;
     if (this.currentPlayer === PlayerIdentifier.X) nextPlayer = PlayerIdentifier.O;
     if (this.currentPlayer === PlayerIdentifier.O) nextPlayer = PlayerIdentifier.X;
 
     return nextPlayer;
+  }
+
+  /**
+   * Emit check the game room state.
+   * if both players are on the game page, the game starts
+   * @param message 
+   */
+  async checkGameRoomState(message: any) {
+    await gameService.checkGameRoomState(socketService.socket!, message);
   }
 }

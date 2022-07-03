@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,7 +17,13 @@
     "reflect-metadata": "^0.1.13",
     "socket-controllers": "^0.0.5",
     "socket.io": "^4.5.1",
-    "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^4.0.3",
+    "jasmine": "^4.2.1",
+    "jasmine-spec-reporter": "^7.0.0",
+    "jasmine-ts": "^0.4.0",
+    "ts-node": "^10.8.2"
   }
 }

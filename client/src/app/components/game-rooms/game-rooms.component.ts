@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import gameService from 'src/app/services/game.service';
 import gameroomService from 'src/app/services/gameroom.service';
 import socketService from 'src/app/services/socket.service';
@@ -15,7 +16,7 @@ export class GameRoomsComponent implements OnInit {
   public roomId: string | undefined;
   public availableRooms: string[] = [];
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   async ngOnInit() {
     socketService.connected.subscribe((connected: boolean) => {
@@ -50,6 +51,7 @@ export class GameRoomsComponent implements OnInit {
         gameService.roomId.next(undefined);
         await this.getAllAvailableRooms();
       }
+      this.router.navigate(['']);
     }
   }
 
@@ -72,6 +74,7 @@ export class GameRoomsComponent implements OnInit {
         if (joined) {
           gameService.isInRoom.next(true);
           gameService.roomId.next(roomId);
+          await this.getAllAvailableRooms();
         }
       }
     }
