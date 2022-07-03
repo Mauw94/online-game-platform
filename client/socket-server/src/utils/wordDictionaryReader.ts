@@ -8,7 +8,7 @@ class WordDictionaryReader {
      */
     public getRandomWordAsync(letterCount: number): Promise<string> {
         return new Promise((rs, rj) => {
-            fs.readFile('./src/WordDictionaries/' + letterCount + '-letter-word.txt', (err, data) => {
+            fs.readFile('./src/wordDictionaries/' + letterCount + '-letter-word.txt', (err, data) => {
                 if (err) rj(err);
 
                 var wordArray = data.toString().split("\n");
