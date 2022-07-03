@@ -6,6 +6,9 @@
 
 *   Show open game rooms with the game that's going to be played
 
+*   move gamestate logic to separate files
+
+* move game logic to separate files (in angular app)
 
 
 !*   Emit event when player clicks on tictactoe -> is in room and is in the game -> at 2 players, start playing

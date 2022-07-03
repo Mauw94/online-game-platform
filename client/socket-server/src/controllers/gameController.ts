@@ -47,6 +47,7 @@ export class GameController {
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
 
+        // TODO move game logic in angular app to separate files
         // TODO: move gamestate logic to separate file
         const gameState = GameController.gameStates.get(gameRoom);
 
