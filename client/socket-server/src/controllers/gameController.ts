@@ -1,30 +1,12 @@
 import { ConnectedSocket, MessageBody, OnMessage, SocketController, SocketIO } from "socket-controllers";
 import { Socket, Server } from "socket.io";
+import { GameStateHandler } from "../gs/gameStateHandler";
 import { GameType } from "../lib/shared/enums/gameType";
 import wordDictionaryReader from "../utils/dictionaryReader";
 
-// startTime: new Date(), game: message.gameType, started: false, playerToPlay: {}, gameState: {}, players: socket.id
-export interface GameState {
-    startTime: Date;
-    gameType: GameType;
-    started: boolean;
-    playerToPlay: string;
-    state: any;
-    players: string[];
-}
 
 @SocketController()
 export class GameController {
-
-    private static gameStates: Map<string, GameState> = new Map<string, GameState>(); // key = room id, value = game state
-
-    /**
-     * Return local gamestates.
-     * @returns 
-     */
-    public static getStates(): Map<string, GameState> {
-        return this.gameStates;
-    }
 
     /**
      * Receive a start request from the client. Emit event back to the client to start the game.
@@ -46,15 +28,12 @@ export class GameController {
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
-
-        // TODO move game logic in angular app to separate files
-        // TODO: move gamestate logic to separate file
-        const gameState = GameController.gameStates.get(gameRoom);
+        const gameState = GameStateHandler.getState(gameRoom);
 
         // update gamestate
         gameState.state = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
-        GameController.gameStates.set(gameRoom, gameState);
+        GameStateHandler.setState(gameRoom, gameState);
 
         socket.emit('on_game_update', message);
         socket.to(gameRoom).emit('on_game_update', message);
@@ -69,7 +48,7 @@ export class GameController {
     @OnMessage('game_win')
     public async onGameWin(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
-        GameController.gameStates.delete(gameRoom); // Remove from gamestates to reduce memory usage
+        GameStateHandler.deleteState(gameRoom); // Remove from gamestates to reduce memory usage
 
         socket.to(gameRoom).emit('on_game_win', message);
     }
@@ -83,7 +62,7 @@ export class GameController {
     @OnMessage('in_game')
     public async inGameRoomAndInGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
         console.log('------checking the game room state ------');
-        const gameState = GameController.gameStates.get(message.roomId);
+        const gameState = GameStateHandler.getState(message.roomId);
         console.log(gameState);
         console.log(socket.id);
         if (gameState !== undefined && gameState.gameType === message.gameType) {
@@ -98,7 +77,7 @@ export class GameController {
                 this.startNewGame(io, socket, message);
             }
         } else {
-            GameController.gameStates.set(message.roomId, { startTime: new Date(), gameType: message.gameType, started: false, playerToPlay: '', state: {}, players: [socket.id] });
+            GameStateHandler.setState(message.roomId, { startTime: new Date(), gameType: message.gameType, started: false, playerToPlay: '', state: {}, players: [socket.id] });
         }
     }
 
