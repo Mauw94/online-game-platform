@@ -38,7 +38,10 @@ export default class TictactoeComponent extends BaseGameComponent {
 
         gameService.playerToPlay.next(this.currentPlayer);
 
-        this.newGame();
+        this.initBoard();
+
+        this.isGameOver = false;
+        this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
       });
 
       // game updates, set the gamestate and player to play
@@ -137,11 +140,9 @@ export default class TictactoeComponent extends BaseGameComponent {
   /**
    * Start a new game.
    */
-  newGame(): void {
+  async newGame(): Promise<void> {
     this.initBoard();
-
-    this.isGameOver = false;
-    this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
+    await super.checkGameRoomState({ roomId: gameService.roomId.getValue()!, gameType: this.gameType });
   }
 
   /**
@@ -155,13 +156,6 @@ export default class TictactoeComponent extends BaseGameComponent {
         this.board[row][col] = PlayerIdentifier.EMPTY;
       }
     }
-  }
-
-  /**
-   * Restart the game.
-   */
-  async restart(): Promise<void> {
-    // TODO: new game
   }
 
   /**
