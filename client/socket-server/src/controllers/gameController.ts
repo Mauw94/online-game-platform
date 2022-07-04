@@ -30,9 +30,14 @@ export class GameController {
         const gameRoom = this.getSocketGameRoom(socket);
         const gameState = GameStateHandler.getState(gameRoom);
 
+
+
         // update gamestate
         gameState.state = message.gameState;
         gameState.playerToPlay = message.playerToPlay;
+
+        console.log(gameState);
+        
         GameStateHandler.setState(gameRoom, gameState);
 
         socket.emit('on_game_update', message);
@@ -63,8 +68,6 @@ export class GameController {
     public async inGameRoomAndInGame(@ConnectedSocket() socket: Socket, @SocketIO() io: Server, @MessageBody() message: any) {
         console.log('------checking the game room state ------');
         const gameState = GameStateHandler.getState(message.roomId);
-        console.log(gameState);
-        console.log(socket.id);
         if (gameState !== undefined && gameState.gameType === message.gameType) {
             if (!gameState.players.includes(socket.id)) {
                 console.log('added the 2nd player');
@@ -73,7 +76,6 @@ export class GameController {
             if (gameState.players.length > 1) {
                 gameState.started = true;
                 console.log(gameState);
-                console.log('starting new game', message.gameType);
                 this.startNewGame(io, socket, message);
             }
         } else {
