@@ -36,7 +36,7 @@ app.use(function (err: any, req: any, res: any, next: any) {
   res.render('error');
 });
 
-// run cleanup gamestate every hour
+// run gamestate clean up every hour
 const minutes = 60;
 const interval = minutes * 60 * 1000;
 setInterval(() => {
