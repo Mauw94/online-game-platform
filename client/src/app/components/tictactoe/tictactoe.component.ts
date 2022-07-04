@@ -45,11 +45,7 @@ export default class TictactoeComponent extends BaseGameComponent {
       await gameService.onGameUpdate(socketService.socket, (gameState, playerToPlay) => {
         this.board = gameState;
         if (!this.isGameOver) {
-          if (this.currentPlayer === playerToPlay) {
-            this.playerTurn = true;
-          } else {
-            this.playerTurn = false;
-          }
+          this.playerTurn = this.currentPlayer === playerToPlay ? true : false;
           this.statusMessage = this.playerTurn ? 'Your turn' : 'Opponent\'s turn';
         }
       });

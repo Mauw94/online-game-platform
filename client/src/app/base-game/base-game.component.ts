@@ -3,7 +3,6 @@ import { PlayerIdentifier } from '../lib/shared/enums/PlayerIdentifier';
 import { GameType } from '../lib/shared/enums/gameType';
 import { ApiService } from '../services/api.service';
 import gameService from '../services/game.service';
-import lingoService from '../services/lingo.service';
 import socketService from '../services/socket.service';
 
 @Component({
@@ -30,7 +29,6 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngOnInit() {
-
     gameService.isInRoom.subscribe(inRoom => {
       this.isInRoom = inRoom;
       if (!this.isGameStarted && this.isInRoom) {
@@ -44,8 +42,6 @@ export class BaseGameComponent implements OnInit {
   }
 
   async ngAfterViewInit() {
-    if (gameService.gameType.getValue() !== this.gameType) return;
-
     await gameService.onGameWin(socketService.socket!, (message: string) => {
       this.isGameOver = true;
       this.statusMessage = message;
@@ -67,13 +63,9 @@ export class BaseGameComponent implements OnInit {
     switch (this.gameType) {
       case GameType.TICTACTOE:
         gameService.gameType.next(GameType.TICTACTOE);
-        gameService.startGame(socketService.socket!,
-          { roomId: gameService.roomId.getValue(), gameType: this.gameType });
         break;
       case GameType.WORDGUESSER:
         gameService.gameType.next(GameType.WORDGUESSER);
-        gameService.startGame(socketService.socket!,
-          { roomId: gameService.roomId.getValue(), gameType: this.gameType, letterCount: lingoService.letterCount.getValue() });;
         break;
     }
 

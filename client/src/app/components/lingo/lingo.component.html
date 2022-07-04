@@ -14,7 +14,7 @@
         <div class="game">
             <input type="text" class="input" placeholder="Guess a {{wordToGuessLength}}-letter word"
                 [attr.minlength]="wordToGuessLength" [attr.maxlength]="wordToGuessLength" formControlName="word">
-            <button [disabled]="!gameForm.valid || !playerTurn" type="submit" (click)="guess()"><svg
+            <button [disabled]="isGameOver || !gameForm.valid || !playerTurn" type="submit" (click)="guess()"><svg
                     xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
                     viewBox="0 0 16 16">
                     <path

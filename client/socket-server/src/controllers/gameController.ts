@@ -52,7 +52,9 @@ export class GameController {
      */
     @OnMessage('game_win')
     public async onGameWin(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
+        console.log('game is won');
         const gameRoom = this.getSocketGameRoom(socket);
+        console.log(gameRoom);
         GameStateHandler.deleteState(gameRoom); // Remove from gamestates to reduce memory usage
 
         socket.to(gameRoom).emit('on_game_win', message);

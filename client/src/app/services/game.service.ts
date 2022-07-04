@@ -112,7 +112,7 @@ class GameService {
     }
 
     /**
-     * Check the gameroom state.
+     * Checks if 2 players are on the same page to start the game.
      * @param socket 
      * @param roomId 
      * @param gameType 
