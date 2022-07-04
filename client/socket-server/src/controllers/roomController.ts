@@ -12,6 +12,7 @@ export class RoomController {
      */
     @OnMessage('get_roomId')
     public async getRoomId(@SocketIO() io: Server, @ConnectedSocket() socket: Socket) {
+        // TODO move logic to get socket rooms to separate file
         const socketRooms = Array.from(socket.rooms.values()).filter(r => r !== socket.id);
 
         if (socketRooms.length > 0) {

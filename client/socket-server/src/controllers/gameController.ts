@@ -1,7 +1,7 @@
 import { ConnectedSocket, MessageBody, OnMessage, SocketController, SocketIO } from "socket-controllers";
 import { Socket, Server } from "socket.io";
 import { GameType } from "../lib/shared/enums/gameType";
-import wordDictionaryReader from "../utils/wordDictionaryReader";
+import wordDictionaryReader from "../utils/dictionaryReader";
 
 // startTime: new Date(), game: message.gameType, started: false, playerToPlay: {}, gameState: {}, players: socket.id
 export interface GameState {
@@ -46,6 +46,9 @@ export class GameController {
     @OnMessage('update_game')
     public async updateGame(@SocketIO() io: Server, @ConnectedSocket() socket: Socket, @MessageBody() message: any) {
         const gameRoom = this.getSocketGameRoom(socket);
+
+        // TODO move game logic in angular app to separate files
+        // TODO: move gamestate logic to separate file
         const gameState = GameController.gameStates.get(gameRoom);
 
         // update gamestate
@@ -146,7 +149,7 @@ export class GameController {
      * @param message 
      */
     private async startWordGuesser(socket: Socket, message: any): Promise<void> {
-        var wordToGuess = await wordDictionaryReader.getRandomWordAsync(message.letterCount);
+        var wordToGuess = await wordDictionaryReader.retrieveWord(message.letterCount);
 
         socket.emit('start_game', { start: true, wordToGuess: wordToGuess, symbol: 'x', gameType: message.gameType });
         socket.to(message.roomId).emit('start_game', { start: false, wordToGuess: wordToGuess, symbol: 'o', gameType: message.gameType });
